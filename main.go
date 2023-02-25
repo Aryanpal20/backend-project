@@ -13,6 +13,22 @@ func main() {
 
 	r := gin.Default()
 
+	v1 := r.Group("/api/v1")
+	{
+		accounts := v1.Group("/accounts")
+		{
+			accounts.POST("/postmovie", movie.PostMovie)
+			accounts.GET("", c.ListAccounts)
+			accounts.POST("", c.AddAccount)
+			accounts.DELETE(":id", c.DeleteAccount)
+			accounts.PATCH(":id", c.UpdateAccount)
+			accounts.POST(":id/images", c.UploadAccountImage)
+		}
+		//...
+	}
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	r.Run(":8080")
+
 	r.POST("/postmovie", movie.PostMovie)
 	r.GET("/getmoviebyid/:id", movie.GetMovieByID)
 	r.GET("/getmoviealldetail", movie.GetMovieAllDetail)

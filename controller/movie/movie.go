@@ -10,15 +10,32 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @BasePath /api/v1
+
+// @Summary Post a New Movie
+// @Description Create a new movie with the input paylod
+// @Tags movies
+// @Accept json
+// @Produce json
+// @Success 200 {object} movie
+// @Router /postmovie [post]
+
 func PostMovie(c *gin.Context) {
 	var input movie.Movie
+	var movies movie.Movie
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	movie := movie.Movie{Movie_Name: input.Movie_Name}
-	database.Database.Create(&movie)
-	c.JSON(http.StatusAccepted, gin.H{"Data": movie})
+	database.Database.Where("movie_name = ?", input.Movie_Name).Find(&movies)
+	if movies.Movie_Name != input.Movie_Name {
+		database.Database.Create(&movie)
+		c.JSON(http.StatusAccepted, gin.H{"Data": movie})
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{"Error": "This movie already present"})
+	}
+
 }
 
 func GetMovieByID(c *gin.Context) {
