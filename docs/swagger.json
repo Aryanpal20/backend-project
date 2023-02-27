@@ -1,7 +1,31 @@
 {
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "title": "Sample API",
+        " description": "API of Movie rating app",
+        "contact": {
+            "name": "API support",
+            "email":"aryan@swagger.io"
+        }
     },
-    "paths": {}
+    "paths": {
+        "/getmoviebyid" : {
+            "get" : {
+                "summary": "Returns a movie.",
+                "description": "get movies ",
+                "parameters": {
+                    "description": "ID",
+                    "in": "Params",
+                    "name":"ID",
+                    "required": true,
+                    "type": "int"
+                },
+                "produces": [
+                    "- application/json"
+                ], 
+                "response": "200"
+            }
+        }
+    
+    }
 }

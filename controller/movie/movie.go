@@ -38,9 +38,22 @@ func PostMovie(c *gin.Context) {
 
 }
 
+// path information
+
+// @BasePath /api/v1
+
+// @Summary get Movie
+// @Description get movie By id
+// @Tags movies,list
+// @Accept json
+// @Produce json
+// @Success 200 {object} movies
+// @Router /getallmovie [get]
+
 func GetMovieByID(c *gin.Context) {
 	var movies movie.Movie
-	if err := database.Database.Where("id = ?", c.Param("id")).First(&movies).Error; err != nil {
+	fmt.Println("sjvsebbhkfbk")
+	if err := database.Database.Where("id = ?", c.Request.URL.Query().Get("id")).First(&movies).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
 		return
 	}
@@ -57,6 +70,18 @@ func GetMovieAllDetail(c *gin.Context) {
 	movies.Specification = append(movies.Specification, details...)
 	c.JSON(http.StatusOK, gin.H{"Data": movies})
 }
+
+// path information
+
+// @BasePath /api/v1
+
+// @Summary get all Movie
+// @Description get all the movie
+// @Tags movies,list
+// @Accept json
+// @Produce json
+// @Success 200 {object} movies
+// @Router /getallmovie [get]
 
 func GetAllMovie(c *gin.Context) {
 	var movies []movie.Movie

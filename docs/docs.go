@@ -14,7 +14,25 @@ const docTemplate = `{
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
-    "paths": {}
+    "paths": {
+        "/getmoviebyid" : {
+            "get" : {
+                "summary": "Returns a movie.",
+                "description": "get movies ",
+                "parameters": {
+                    "description": "ID",
+                    "in": "Params",
+                    "name":"ID",
+                    "required": true,
+                    "type": "int"
+                },
+                "produces": [
+                    "- application/json"
+                ], 
+                "response": "200"
+            }
+        }
+    }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
