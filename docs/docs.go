@@ -9,27 +9,94 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "contact": {},
+        "contact": {
+            "name": "API support",
+            "email":"aryan@swagger.io"
+        },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/getmoviebyid" : {
-            "get" : {
-                "summary": "Returns a movie.",
-                "description": "get movies ",
-                "parameters": {
-                    "description": "ID",
-                    "in": "Params",
-                    "name":"ID",
-                    "required": true,
-                    "type": "int"
-                },
-                "produces": [
-                    "- application/json"
-                ], 
-                "response": "200"
+        "/postmovie": {
+            "post": {
+                "tags": ["movie"],
+                "summary": "Post movie",
+                "description": "Returns a Post movie",
+                "produces": ["application/json"],
+                "consumes": ["application/json"],
+                "parameters": [
+                    {
+                        "name": "payload",
+                        "in": "body",
+                        "description": "The request payload for creating a new instance of Movie",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "movie_name": {
+                                    "type": "",
+                                    "description": "The name of the resource to create."
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/getmoviebyid/{id}": {
+            "get": {
+                "tags": ["movie"],
+                "summary": "Get movie by ID",
+                "description": "Returns a single movie object by its ID",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the movie to fetch",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Movie"
+                        }
+                    },
+                    "404": {
+                    "description": "Not found"
+                    }
+                }
+            }
+        },
+        "definitions": {
+            "Movie": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "ID of the movie"
+                    },
+                    "movie_name": {
+                        "type": "string",
+                        "description": "Name of the movie"
+                    }
+                }
             }
         }
     }
