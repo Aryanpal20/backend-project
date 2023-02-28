@@ -32,7 +32,7 @@ func GetSpecification(c *gin.Context) {
 func UpdateSpecification(c *gin.Context) {
 	var details detail.Specification
 	var input detail.Specification
-	if err := database.Database.Where("id = ?", c.Param("id")).First(&details).Error; err != nil {
+	if err := database.Database.Where("movie_id = ?", c.Param("id")).First(&details).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
 		return
 	}
