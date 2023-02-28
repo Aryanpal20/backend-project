@@ -31,32 +31,31 @@ func PostMovie(c *gin.Context) {
 	database.Database.Where("movie_name = ?", input.Movie_Name).Find(&movies)
 	if movies.Movie_Name != input.Movie_Name {
 		database.Database.Create(&movie)
+		fmt.Println(movie, "sjchvjk")
 		c.JSON(http.StatusAccepted, gin.H{"Data": movie})
 	} else {
+		fmt.Println("ERROR")
 		c.JSON(http.StatusBadRequest, gin.H{"Error": "This movie already present"})
 	}
 
 }
 
-// path information
-
-// @BasePath /api/v1
-
-// @Summary get Movie
-// @Description get movie By id
-// @Tags movies,list
-// @Accept json
-// @Produce json
+// @Summary Get movie by ID
+// @Description Get the movie by ID
+// @Tags movies
+// @Param id path int true "ID"
 // @Success 200 {object} movies
-// @Router /getallmovie [get]
+// @Failure 404 {string} string "movie not found"
+// @Router /getmoviebyid/:id [get]
 
 func GetMovieByID(c *gin.Context) {
 	var movies movie.Movie
 	fmt.Println("sjvsebbhkfbk")
-	if err := database.Database.Where("id = ?", c.Request.URL.Query().Get("id")).First(&movies).Error; err != nil {
+	if err := database.Database.Where("id = ?", c.Param("id")).First(&movies).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
 		return
 	}
+	fmt.Println("oojnv", movies)
 	c.JSON(http.StatusOK, gin.H{"Data": movies})
 }
 
