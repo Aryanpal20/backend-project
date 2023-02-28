@@ -26,7 +26,7 @@ func main() {
 
 	r.Use(func(c *gin.Context) {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE,PATCH, OPTIONS")
 		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(http.StatusOK)
@@ -40,7 +40,7 @@ func main() {
 	{
 		api.POST("/postmovie", movie.PostMovie)
 		api.GET("/getmoviebyid/:id", movie.GetMovieByID)
-		api.GET("/getmoviealldetail", movie.GetMovieAllDetail)
+		api.GET("/getmoviealldetail/:id", movie.GetMovieAllDetail)
 		api.GET("/getallmovie", movie.GetAllMovie)
 		api.PATCH("/updatemovie/:id", movie.UpdateMovie)
 		api.DELETE("/deletemovie/:id", movie.DeleteMovie)
@@ -53,7 +53,7 @@ func main() {
 	}
 	r.POST("/postmovie", movie.PostMovie)
 	r.GET("/getmoviebyid/:id", movie.GetMovieByID)
-	r.GET("/getmoviealldetail", movie.GetMovieAllDetail)
+	r.GET("/getmoviealldetail/:id", movie.GetMovieAllDetail)
 	r.GET("/getallmovie", movie.GetAllMovie)
 	r.PATCH("/updatemovie/:id", movie.UpdateMovie)
 	r.DELETE("/deletemovie/:id", movie.DeleteMovie)

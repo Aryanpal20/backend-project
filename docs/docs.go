@@ -72,10 +72,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/Movie"
-                        }
+                        "description": "OK"
                     },
                     "404": {
                     "description": "Not found"
@@ -83,18 +80,267 @@ const docTemplate = `{
                 }
             }
         },
-        "definitions": {
-            "Movie": {
-                "type": "object",
-                "properties": {
-                    "id": {
+        "/getmoviealldetail/{id}": {
+            "get": {
+                "tags": ["movie"],
+                "summary": "Get movie full detail",
+                "description": "Returns a single movie full detail",
+                "parameters":[
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the movie to fetch",
+                        "required": true,
                         "type": "integer",
-                        "format": "int64",
-                        "description": "ID of the movie"
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
                     },
-                    "movie_name": {
-                        "type": "string",
-                        "description": "Name of the movie"
+                    "404": {
+                    "description": "Not found"
+                    }
+                }
+            }  
+        },
+        "/getallmovie": {
+            "get": {
+                "tags": ["movie"],
+                "summary": "Get all movie ",
+                "description": "Returns all movie",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                    "description": "Not found"
+                    }
+                }
+            }
+        },
+        "/updatemovie/{id}": {
+            "patch": {
+                "tags": ["movie"],
+                "summary": "Update movie name",
+                "description": "Returns a Updated movie",
+                "produces": ["application/json"],
+                "consumes": ["application/json"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the movie to fetch",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "payload",
+                        "in": "body",
+                        "description": "The request payload for creating a new instance of Movie",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "movie_name": {
+                                    "type": "",
+                                    "description": "The name of the resource to create."
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/deletemovie/{id}": {
+            "delete": {
+                "tags": ["movie"],
+                "summary": "Delete movie by ID",
+                "description": "Movie deleted by its ID",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the movie to fetch",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                    "description": "Not found"
+                    }
+                }
+            }
+        },
+        "/postspecification": {
+            "post": {
+                "tags": ["specification"],
+                "summary": "Post movie specification",
+                "description": "Returns a Post movie specification",
+                "produces": ["application/json"],
+                "consumes": ["application/json"],
+                "parameters": [
+                    {
+                        "name": "payload",
+                        "in": "body",
+                        "description": "The request payload for creating a new instance of Movie",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "length": {
+                                    "type": "",
+                                    "description": "The name of the resource to create."
+                                },
+                                "original_language": {
+                                    "type":""
+                                },
+                                "year_of_production": {
+                                    "type": "integer",
+                                    "format": "int64"
+                                },
+                                "director_name": {
+                                    "type": ""
+                                },
+                                "rating":{
+                                    "type": ""
+                                },
+                                "genres": {
+                                    "type": ""
+                                },
+                                "cast" : {
+                                    "type": ""
+                                },
+                                "movieid": {
+                                    "type": "integer",
+                                    "format": "int64"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "400": { 
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/getspecification/{id}": {
+            "get": {
+                "tags": ["specification"],
+                "summary": "Get specification by ID",
+                "description": "Returns a single movie specification by its ID",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the movie to fetch",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                    "description": "Not found"
+                    }
+                }
+            }
+        },
+        "/updatespecification/{id}": {
+            "patch": {
+                "tags": ["specification"],
+                "summary": "Update movie rating",
+                "description": "Returns a Updated movie",
+                "produces": ["application/json"],
+                "consumes": ["application/json"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the movie to fetch",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "payload",
+                        "in": "body",
+                        "description": "The request payload for creating a new instance of Movie",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "rating": {
+                                    "type": "",
+                                    "description": "The name of the resource to create."
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/deletespecification/{id}": {
+            "delete": {
+                "tags": ["specification"],
+                "summary": "Delete specification by ID",
+                "description": "Movie specification deleted by its ID",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the movie to fetch",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                    "description": "Not found"
                     }
                 }
             }

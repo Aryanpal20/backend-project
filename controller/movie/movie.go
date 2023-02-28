@@ -62,11 +62,25 @@ func GetMovieByID(c *gin.Context) {
 // here we get both table data.
 func GetMovieAllDetail(c *gin.Context) {
 	var movies movie.Movie
+	fmt.Println("lknvjkdnnvjn")
 	var details []detail.Specification
-	detail := c.PostForm("detail")
-	database.Database.Where("movie_name = ?", detail).Find(&movies)
+	// var input movie.Movie
+	// if err := c.ShouldBindJSON(&input); err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	// 	return
+	// }
+	// movie := movie.Movie{Movie_Name: input.Movie_Name}
+	// detail := c.Request.URL.Query().Get("detail")
+	// fmt.Println(detail)
+	// database.Database.Where("movie_name = ?", detail).Find(&movies)
+	if err := database.Database.Where("id = ?", c.Param("id")).Find(&movies).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
+		return
+	}
+	fmt.Println(movies)
 	database.Database.Where("movie_id = ?", movies.ID).Preload("Specifications").Find(&details)
 	movies.Specification = append(movies.Specification, details...)
+	fmt.Println("skjvbkhadbvdbsnvshidvbfihbvfhbfhvbnfhhvb", movies)
 	c.JSON(http.StatusOK, gin.H{"Data": movies})
 }
 
