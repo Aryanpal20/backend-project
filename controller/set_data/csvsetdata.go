@@ -6,7 +6,6 @@ import (
 	"gin/database"
 	ep "gin/model/emp_model"
 	"net/http"
-	"os"
 	"path/filepath"
 	"strconv"
 
@@ -25,18 +24,16 @@ func PostCSVData(c *gin.Context) {
 
 	// Check the file extension to determine whether it is a CSV or an XLSX file
 	extension := filepath.Ext(fil.Filename)
-
 	tokenid := c.GetFloat64("id")
 	fmt.Println(tokenid)
 	var emp ep.Employee
 	if extension == ".csv" {
-		file, err := os.Open("emp.csv")
+		file, err := fil.Open()
 		if err != nil {
 			panic(err)
 		}
 
 		reader := csv.NewReader(file)
-
 		emp.Userid = int(tokenid)
 		record, _ := reader.ReadAll()
 
@@ -54,8 +51,12 @@ func PostCSVData(c *gin.Context) {
 			fmt.Println("scjkdsnjkvbskvbsfv", emp)
 		}
 	} else if extension == ".xlsx" {
-		excelFileName := "/home/etech/Downloads/emp.xlsx"
-		xlFile, err := xlsx.OpenFile(excelFileName)
+		f, err := fil.Open()
+		if err != nil {
+			c.String(500, "Internal server error")
+			return
+		}
+		xlFile, err := xlsx.OpenReaderAt(f, fil.Size)
 		if err != nil {
 			fmt.Println("Error opening XLSX file:", err)
 			return
@@ -79,22 +80,19 @@ func PostCSVData(c *gin.Context) {
 				}
 				fmt.Println("dbvhebfehifbibf", arr)
 				arr1 = append(arr1, arr)
+				uuid := uuid.New().String()
+				id, _ := strconv.Atoi(uuid)
+				emp.ID = id
+				name := arr[0]
+				i, _ := strconv.Atoi(arr[1])
+				age := i
+				emp.Name = name
+				emp.Age = age
+				database.Database.Create(&emp)
 				fmt.Println()
 			}
 		}
 		fmt.Println("hbdhbd", arr1)
-		for _, r := range arr1 {
-			uuid := uuid.New().String()
-			id, _ := strconv.Atoi(uuid)
-			emp.ID = id
-			name := r[0]
-			i, _ := strconv.Atoi(r[1])
-			age := i
-			emp.Name = name
-			emp.Age = age
-			database.Database.Create(&emp)
-			fmt.Println("scjkdsnjkvbskvbsfv", emp)
-		}
 	} else {
 		c.String(http.StatusBadRequest, "unsupported file type")
 		return
