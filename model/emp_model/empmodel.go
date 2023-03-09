@@ -1,8 +1,10 @@
 package empmodel
 
 type Employee struct {
-	ID     int    `json:"id"`
-	Name   string `json:"name"`
-	Age    int    `json:"age"`
-	Userid int    `json:"user_id"`
+	ID       string `json:"id"`
+	Name     string `json:"name"`
+	Age      int    `json:"age"`
+	Email    string `gorm:"Unique:email"`
+	Phone_No string `gorm:"Unique:phone_no"`
+	Userid   int    `json:"user_id"`
 }

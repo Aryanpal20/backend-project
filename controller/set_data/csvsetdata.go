@@ -16,83 +16,84 @@ import (
 
 func PostCSVData(c *gin.Context) {
 
-	fil, err := c.FormFile("file") // Get the uploaded file from the request
+	file, err := c.FormFile("file") // Get the uploaded file from the request
 	if err != nil {
 		c.String(http.StatusBadRequest, fmt.Sprintf("get form err: %s", err.Error()))
 		return
 	}
 
-	// Check the file extension to determine whether it is a CSV or an XLSX file
-	extension := filepath.Ext(fil.Filename)
+	// Check the file extension
+	extension := filepath.Ext(file.Filename)
 	tokenid := c.GetFloat64("id")
 	fmt.Println(tokenid)
-	var emp ep.Employee
+
+	file1, err := file.Open()
+	if err != nil {
+		panic(err)
+	}
 	if extension == ".csv" {
-		file, err := fil.Open()
-		if err != nil {
-			panic(err)
-		}
 
-		reader := csv.NewReader(file)
-		emp.Userid = int(tokenid)
+		reader := csv.NewReader(file1)
 		record, _ := reader.ReadAll()
-
 		fmt.Println("jcbhjdsbvvbdsvbhjvbdsvhjbvhjbvircfrf", record)
-		for _, r := range record {
+		dataMap := []ep.Employee{}
+		data := make(map[string]string)
+		var email string
+		for firstrow, row := range record {
+			if firstrow == 0 {
+				continue
+			}
+			var emp ep.Employee
 			uuid := uuid.New().String()
-			id, _ := strconv.Atoi(uuid)
-			emp.ID = id
-			name := r[0]
-			i, _ := strconv.Atoi(r[1])
-			age := i
-			emp.Name = name
-			emp.Age = age
-			database.Database.Create(&emp)
-			fmt.Println("scjkdsnjkvbskvbsfv", emp)
+			emp.ID = uuid
+			name := row[0]
+			email = row[2]
+			fmt.Println("sdhbvd", email)
+			phone := row[3]
+			age := row[1]
+			i, _ := strconv.Atoi(row[1])
+			data["ID"] = uuid
+			data["Name"] = name
+			data["Age"] = age
+			data["Email"] = email
+			data["Phone_No"] = phone
+			dataMap = append(dataMap, ep.Employee{ID: uuid, Name: name, Age: i, Email: email, Phone_No: phone, Userid: int(tokenid)})
 		}
+		database.Database.Create(dataMap)
 	} else if extension == ".xlsx" {
-		f, err := fil.Open()
-		if err != nil {
-			c.String(500, "Internal server error")
-			return
-		}
-		xlFile, err := xlsx.OpenReaderAt(f, fil.Size)
+		xlFile, err := xlsx.OpenReaderAt(file1, file.Size)
 		if err != nil {
 			fmt.Println("Error opening XLSX file:", err)
 			return
 		}
-
-		arr1 := [][]string{}
-		emp.Userid = int(tokenid)
+		dataMap := []ep.Employee{}
+		data := make(map[string]string)
+		// Iterate over the sheets and rows
 		for _, sheet := range xlFile.Sheets {
-			fmt.Println("Sheet name:", sheet.Name)
-			// Loop through all the rows in the sheet.
-			for _, row := range sheet.Rows {
-				fmt.Println("hjdvhv", row)
-				arr := []string{}
-				// Loop through all the cells in the row.
-				for _, cell := range row.Cells {
-					text := cell.String()
-
-					// Print the value of the cell.
-					arr = append(arr, text)
-
+			for firstrow, row := range sheet.Rows {
+				if firstrow == 0 {
+					continue
 				}
-				fmt.Println("dbvhebfehifbibf", arr)
-				arr1 = append(arr1, arr)
+				name := row.Cells[0].Value
+				age := row.Cells[1].Value
+				email := row.Cells[2].Value
+				phone := row.Cells[3].Value
+				floatValue, err := strconv.ParseFloat(age, 64)
+				if err != nil {
+					fmt.Println("Error:", err)
+				}
+				intValue := int(floatValue)
 				uuid := uuid.New().String()
-				id, _ := strconv.Atoi(uuid)
-				emp.ID = id
-				name := arr[0]
-				i, _ := strconv.Atoi(arr[1])
-				age := i
-				emp.Name = name
-				emp.Age = age
-				database.Database.Create(&emp)
-				fmt.Println()
+				data["ID"] = uuid
+				data["Name"] = name
+				data["Age"] = age
+				data["Email"] = email
+				data["Phone_No"] = phone
+				dataMap = append(dataMap, ep.Employee{ID: uuid, Name: name, Age: intValue, Email: email, Phone_No: phone, Userid: int(tokenid)})
 			}
 		}
-		fmt.Println("hbdhbd", arr1)
+		fmt.Println(dataMap)
+		database.Database.Create(dataMap)
 	} else {
 		c.String(http.StatusBadRequest, "unsupported file type")
 		return
